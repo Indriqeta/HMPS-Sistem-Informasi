@@ -333,8 +333,8 @@
     <p>Silakan login sesuai peran Anda</p>
     <form id="authForm" class="auth-form" novalidate>
       <div class="field">
-        <label for="auth_user">Username</label>
-        <input type="text" id="auth_user" placeholder="" required />
+        <label for="auth_user">Email</label>
+        <input type="email" id="auth_user" placeholder="nama@gmail.com" autocomplete="username" required />
       </div>
       <div class="field">
         <label for="auth_pass">Password</label>
@@ -799,6 +799,10 @@
     sekretaris: 'sekretaris@gmail.com',
     bendahara: 'bendahara@gmail.com'
   };
+  var authRoleByEmail = {
+    'sekretaris@gmail.com': 'sekretaris',
+    'bendahara@gmail.com': 'bendahara'
+  };
 
   var els = {
     authScreen: document.getElementById('authScreen'),
@@ -1034,16 +1038,17 @@
       return;
     }
 
-    if(!authEmailByRole[u]){
-      alert('Username atau password tidak sesuai.');
+    var role = authRoleByEmail[u];
+    if(!role){
+      alert('Email atau password tidak sesuai.');
       return;
     }
 
-    var email = authEmailByRole[u];
+    var email = authEmailByRole[role];
     try {
       await firebase.signInWithEmailAndPassword(firebase.auth, email, p);
     } catch(error){
-      alert('Login gagal. Periksa username dan password atau hubungi pengelola.');
+      alert('Login gagal. Periksa email dan password atau hubungi pengelola.');
     }
   });
 
