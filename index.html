@@ -795,6 +795,11 @@
     editingIuranId: null
   };
 
+  var authEmailByRole = {
+    sekretaris: 'sekretaris@gmail.com',
+    bendahara: 'bendahara@gmail.com'
+  };
+
   var els = {
     authScreen: document.getElementById('authScreen'),
     appScreen: document.getElementById('appScreen'),
@@ -1029,12 +1034,12 @@
       return;
     }
 
-    if(u !== 'sekretaris' && u !== 'bendahara'){
+    if(!authEmailByRole[u]){
       alert('Username atau password tidak sesuai.');
       return;
     }
 
-    var email = u + '@' + firebase.projectId + '.firebaseapp.com';
+    var email = authEmailByRole[u];
     try {
       await firebase.signInWithEmailAndPassword(firebase.auth, email, p);
     } catch(error){
@@ -1057,7 +1062,7 @@
       try {
         var profile = await firebase.getDoc(firebase.doc(firebase.db, 'users', user.uid));
         var role = profile.exists() ? profile.data().role : '';
-        if((role !== 'sekretaris' && role !== 'bendahara') || user.email !== role + '@' + firebase.projectId + '.firebaseapp.com'){
+        if(!authEmailByRole[role] || user.email !== authEmailByRole[role]){
           alert('Akun ini belum diberi hak akses portal. Hubungi pengelola.');
           await firebase.signOut(firebase.auth);
           return;
